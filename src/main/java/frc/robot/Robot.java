@@ -4,11 +4,11 @@
 
 package frc.robot;
 
-import frc.robot.Drivetrain.*;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -24,7 +24,7 @@ public class Robot extends TimedRobot {
     private CommandScheduler schedule;
 
     // robot features
-    private Simulate sim;
+    public static Simulate sim;
     private Drivetrain drive;
 
     /**
@@ -38,8 +38,10 @@ public class Robot extends TimedRobot {
 
         // initialize robot features
         schedule = CommandScheduler.getInstance();
-        sim = new Simulate(this, driverCont);
-        drive = new Drivetrain(sim);
+        drive = new Drivetrain();
+        
+        //subsystems that we don't need to save the reference to, calling new schedules them
+        new Odometry(drive);
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, driverCont));
@@ -65,9 +67,9 @@ public class Robot extends TimedRobot {
         //make a command that combines our sequence together
         SequentialCommandGroup commands = new SequentialCommandGroup(
             //drive forward 2 sec, turn right, forward 2 sec, left, drive 1 sec
-            new TimedDrive(drive, 2),
+            new DriveTimed(drive, 2),
             new WaitCommand(1.5),
-            new TimedDrive(drive, 2)
+            new DriveTimed(drive, 2)
         );
 
         //schedule this command for our autonomous
@@ -115,6 +117,7 @@ public class Robot extends TimedRobot {
     /* Where to initialize simulation objects */
     @Override
     public void simulationInit() {
+        sim = new Simulate(drive);
         sim.Init();
     }
 

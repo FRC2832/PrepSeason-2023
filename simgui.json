@@ -10,6 +10,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/Drivetrain": "Subsystem",
+      "/LiveWindow/Odometry": "Subsystem",
       "/LiveWindow/Ungrouped/ADXRS450_Gyro[0]": "Gyro",
       "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
@@ -41,6 +42,15 @@
   "NetworkTables": {
     "LiveWindow": {
       "Ungrouped": {
+        "open": true
+      },
+      "open": true
+    },
+    "Shuffleboard": {
+      "Drivetrain": {
+        "Front Left Module": {
+          "open": true
+        },
         "open": true
       },
       "open": true

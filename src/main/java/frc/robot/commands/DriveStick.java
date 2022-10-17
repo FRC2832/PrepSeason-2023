@@ -1,7 +1,9 @@
-package frc.robot.Drivetrain;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.Drivetrain;
 
 /**
  * Drive the robot with joysticks 
@@ -26,9 +28,11 @@ public class DriveStick extends CommandBase {
 
     @Override
     public void execute() {
-        double speed = -cont.getRawAxis(1);           //get the speed based on left stick up/down
-        double turn = -cont.getRawAxis(4) * 0.7;      //get the turn based on right stick left/right
-        drive.arcadeDrive(speed, turn);               //command the drivetrain based on our inputs
+        double xSpeed = -cont.getLeftY() * Constants.MAX_DRIVER_SPEED;
+        double ySpeed = -cont.getLeftX() * Constants.MAX_DRIVER_SPEED;      
+        double turn = -cont.getRightX() * Constants.MAX_DRIVER_OMEGA;      
+
+        drive.swerveDrive(xSpeed, ySpeed, turn, false);
     }
 
     @Override

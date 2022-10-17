@@ -1,12 +1,14 @@
-package frc.robot.Drivetrain;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.Drivetrain;
 
 /**
  * Drive the robot at 50% power
  */
-public class TimedDrive extends CommandBase {
+public class DriveTimed extends CommandBase {
     private Drivetrain drive;
     private Timer timer;
     private double stopTime;
@@ -16,7 +18,7 @@ public class TimedDrive extends CommandBase {
      * @param drive Drivetrain subsystem to command
      * @param stopTime Time to drive
      */
-    public TimedDrive(Drivetrain drive, double stopTime) {
+    public DriveTimed(Drivetrain drive, double stopTime) {
         //copy inputs to the command
         this.drive = drive;
         this.stopTime = stopTime;
@@ -38,7 +40,7 @@ public class TimedDrive extends CommandBase {
     @Override
     public void execute() {
         //command 50% straight
-        drive.arcadeDrive(0.5, 0);
+        drive.swerveDrive(0.5 * Constants.MAX_DRIVETRAIN_SPEED, 0, 0, false);
     }
 
     @Override
@@ -50,6 +52,6 @@ public class TimedDrive extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         //when stopped, stop the drivetrain
-        drive.arcadeDrive(0, 0);
+        drive.swerveDrive(0, 0, 0, false);
     }
 }
