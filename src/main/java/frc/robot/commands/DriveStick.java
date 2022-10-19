@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import org.livoniawarriors.UtilFunctions;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -28,11 +30,15 @@ public class DriveStick extends CommandBase {
 
     @Override
     public void execute() {
-        double xSpeed = -cont.getLeftY() * Constants.MAX_DRIVER_SPEED;
-        double ySpeed = -cont.getLeftX() * Constants.MAX_DRIVER_SPEED;      
-        double turn = -cont.getRightX() * Constants.MAX_DRIVER_OMEGA;      
+        double xSpeed = -UtilFunctions.deadband(cont.getLeftY(), Constants.STICK_DEADBAND);
+        double ySpeed = -UtilFunctions.deadband(cont.getLeftX(), Constants.STICK_DEADBAND);      
+        double turn   = -UtilFunctions.deadband(cont.getRightX(), Constants.STICK_DEADBAND);      
 
-        drive.swerveDrive(xSpeed, ySpeed, turn, false);
+        drive.swerveDrive(
+            xSpeed  * Constants.MAX_DRIVER_SPEED, 
+            ySpeed  * Constants.MAX_DRIVER_SPEED, 
+            turn    * Constants.MAX_DRIVER_OMEGA, 
+            false);
     }
 
     @Override
