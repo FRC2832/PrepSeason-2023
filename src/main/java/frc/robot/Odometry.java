@@ -27,4 +27,8 @@ public class Odometry extends SubsystemBase {
 
         // TODO: Add swerve corners to field if requested
     }
+
+    public void resetPose(Pose2d pose) {
+        odometry.resetPosition(pose, drive.getHeading());
+    }
 }

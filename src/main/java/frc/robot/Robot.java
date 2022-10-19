@@ -26,6 +26,7 @@ public class Robot extends TimedRobot {
     // robot features
     public static Simulate sim;
     private Drivetrain drive;
+    private Odometry odometry;
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -41,7 +42,8 @@ public class Robot extends TimedRobot {
         drive = new Drivetrain();
         
         //subsystems that we don't need to save the reference to, calling new schedules them
-        new Odometry(drive);
+        odometry = new Odometry(drive);
+        odometry.resetPose(Constants.START_POS);
 
         //set the default commands to run
         drive.setDefaultCommand(new DriveStick(drive, driverCont));
