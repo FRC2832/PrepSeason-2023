@@ -17,23 +17,10 @@
       "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
-      "/LiveWindow/Drivetrain": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/LiveWindow/Ungrouped/DifferentialDrive[1]": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/LiveWindow/Ungrouped/Scheduler": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Field": {
-        "image": "2022-field.png",
+        "height": 15.979999542236328,
+        "image": "2022-field-rot.png",
+        "width": 8.210000038146973,
         "window": {
           "visible": true
         }
