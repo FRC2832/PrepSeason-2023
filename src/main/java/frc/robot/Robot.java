@@ -4,7 +4,14 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.inputs.LoggedNetworkTables;
+import org.littletonrobotics.junction.io.ByteLogReceiver;
+import org.littletonrobotics.junction.io.LogSocketServer;
+
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -17,7 +24,7 @@ import frc.robot.commands.*;
  * creating this project, you must also update the build.gradle file in the
  * project.
  */
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
 
     // robot parts
     private XboxController driverCont;
@@ -34,6 +41,22 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        setUseTiming(true); // Run as fast as possible during replay
+        LoggedNetworkTables.getInstance().addTable("/SmartDashboard"); // Log & replay "SmartDashboard" values (no tables are logged by default).
+        LoggedNetworkTables.getInstance().addTable("/LiveWindow");
+        LoggedNetworkTables.getInstance().addTable("/Shuffleboard");
+        Logger.getInstance().recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+
+        if (isReal()) {
+            Logger.getInstance().addDataReceiver(new ByteLogReceiver("/media/sda1/")); // Log to USB stick (name will be selected automatically)
+            Logger.getInstance().addDataReceiver(new LogSocketServer(5800)); // Provide log data over the network, viewable in Advantage Scope.
+        } else {
+            String path = Filesystem.getOperatingDirectory().getAbsolutePath().replace('\\', '/'); // Prompt the user for a file path on the command line
+            //Logger.getInstance().setReplaySource(new ByteLogReplay(path)); // Read log file for replay
+            Logger.getInstance().addDataReceiver(new ByteLogReceiver(path)); // Save replay results to a new log
+        }
+        Logger.getInstance().start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
+
         // initialize robot parts and locations where they are
         driverCont = new XboxController(0);         //XboxController plugged into Joystick port 0 on the driver station
 
@@ -77,7 +100,9 @@ public class Robot extends TimedRobot {
         //schedule this command for our autonomous
         //schedule.schedule(commands);
         odometry.resetPose(Constants.START_POS);
-        schedule.schedule(new DriveToPoint(drive, odometry, Constants.START_POS));
+        DriveToPoint driveToPoint = new DriveToPoint(drive, odometry, Constants.START_POS);
+        SmartDashboard.putData(driveToPoint);
+        schedule.schedule(driveToPoint);
     }
 
     /** This function is called periodically during autonomous. */

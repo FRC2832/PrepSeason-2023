@@ -6,6 +6,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class Simulate {
+    private final double LOOP_TIME = 0.02;
+
     // robot parts
     private Drivetrain drive;
     private SwerveDriveKinematics kinematics;
@@ -46,9 +48,9 @@ public class Simulate {
         SwerveModuleState[] moduleRequests = drive.getSwerveStateRequest();
         ChassisSpeeds speeds = kinematics.toChassisSpeeds(moduleRequests);
         
-        ypr_deg[0] += Math.toDegrees(speeds.omegaRadiansPerSecond * Robot.kDefaultPeriod);
-        xyz_mps[0] = speeds.vxMetersPerSecond / Robot.kDefaultPeriod;
-        xyz_mps[1] = speeds.vyMetersPerSecond / Robot.kDefaultPeriod;
+        ypr_deg[0] += Math.toDegrees(speeds.omegaRadiansPerSecond * LOOP_TIME);
+        xyz_mps[0] = speeds.vxMetersPerSecond / LOOP_TIME;
+        xyz_mps[1] = speeds.vyMetersPerSecond / LOOP_TIME;
 
         //TODO: Simulate the actual swerve corners... https://www.chiefdelphi.com/t/sysid-gains-on-sds-mk4i-modules/400373/7
         for(int i=0; i<moduleRequests.length; i++) {
