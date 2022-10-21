@@ -31,4 +31,8 @@ public class Odometry extends SubsystemBase {
     public void resetPose(Pose2d pose) {
         odometry.resetPosition(pose, drive.getHeading());
     }
+
+    public Pose2d getPose() {
+        return robotPose;
+    }
 }

@@ -75,7 +75,9 @@ public class Robot extends TimedRobot {
         );
 
         //schedule this command for our autonomous
-        schedule.schedule(commands);
+        //schedule.schedule(commands);
+        odometry.resetPose(Constants.START_POS);
+        schedule.schedule(new DriveToPoint(drive, odometry, Constants.START_POS));
     }
 
     /** This function is called periodically during autonomous. */
