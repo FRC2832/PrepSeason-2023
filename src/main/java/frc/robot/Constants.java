@@ -3,6 +3,8 @@ package frc.robot;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper.GearRatio;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public final class Constants {
@@ -41,6 +43,9 @@ public final class Constants {
     public static final double MAX_DRIVETRAIN_OMEGA = 3 * Math.PI;  //max Radians per Second the robot can spin
     public static final double NOM_BATTERY_VOLTAGE = 12.5;
 
-    public static final double MAX_DRIVER_SPEED = 3;        //Max speed (meters/sed) the driver can go
-    public static final double MAX_DRIVER_OMEGA = 1.5 * Math.PI;  //Max angle (rad/sec) the driver can go
+    public static final double MAX_DRIVER_SPEED = 3;                //Max speed (meters/sed) the driver can go
+    public static final double MAX_DRIVER_OMEGA = 1.5 * Math.PI;    //Max angle (rad/sec) the driver can go
+    public static final double STICK_DEADBAND = 0.13;               //how much of the sticks from the driver should we remove
+
+    public static final Pose2d START_POS = new Pose2d(3.186,6.072,Rotation2d.fromDegrees(-135));  //where does the robot start at?
 }

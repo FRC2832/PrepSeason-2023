@@ -29,7 +29,8 @@ public class Drivetrain extends SubsystemBase {
     private double[] xyz_mps = new double[3];
     private short[] ba_xyz = new short[3]; 
     private Rotation2d heading = new Rotation2d();
-    private SwerveModuleState[] states = new SwerveModuleState[4];
+    private SwerveModuleState[] requestStates = new SwerveModuleState[4];
+    private SwerveModuleState[] currentStates = new SwerveModuleState[4];
 
     /**
      * Initialize the Drivetrain components
@@ -89,8 +90,9 @@ public class Drivetrain extends SubsystemBase {
             Constants.SWERVE_BACK_LEFT_LOCATION,
             Constants.SWERVE_BACK_RIGHT_LOCATION);
         
-        for(int i=0; i< states.length; i++) {
-            states[i] = new SwerveModuleState();
+        for(int i=0; i< requestStates.length; i++) {
+            requestStates[i] = new SwerveModuleState();
+            currentStates[i] = new SwerveModuleState();
         }
 
         if(Robot.isReal()) {
@@ -108,9 +110,14 @@ public class Drivetrain extends SubsystemBase {
                 xyz_mps[i] = ba_xyz[i] * PIGEON_RAW_TO_MPS;
             }
             pigeon.getYawPitchRoll(ypr_deg);
+            for(int i=0; i<currentStates.length; i++) {
+                currentStates[i].angle = Rotation2d.fromDegrees(modules[i].getSteerAngle());
+                currentStates[i].speedMetersPerSecond = modules[i].getDriveVelocity();
+            }
         } else {
             ypr_deg = Robot.sim.getPigeonYpr();
             xyz_mps = Robot.sim.getPigeonXyz();
+            currentStates = Robot.sim.getSwerveStates();
         }
 
         //calculate positions for the rest of the loop
@@ -138,13 +145,13 @@ public class Drivetrain extends SubsystemBase {
         }
         
         //calculate the states from the speeds
-        states = kinematics.toSwerveModuleStates(speeds);
+        requestStates = kinematics.toSwerveModuleStates(speeds);
         // sometime the Kinematics spits out too fast of speeds, so this will fix this
-        SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.MAX_DRIVETRAIN_SPEED);
+        SwerveDriveKinematics.desaturateWheelSpeeds(requestStates, Constants.MAX_DRIVETRAIN_SPEED);
 
         // command each swerve module
         for (int i = 0; i < modules.length; i++) {
-            modules[i].set(states[i].speedMetersPerSecond / Constants.MAX_DRIVETRAIN_SPEED * Constants.NOM_BATTERY_VOLTAGE, states[i].angle.getRadians());
+            modules[i].set(requestStates[i].speedMetersPerSecond / Constants.MAX_DRIVETRAIN_SPEED * Constants.NOM_BATTERY_VOLTAGE, requestStates[i].angle.getRadians());
         }
     }
 
@@ -164,8 +171,12 @@ public class Drivetrain extends SubsystemBase {
         return kinematics;
     }
 
+    public SwerveModuleState[] getSwerveStateRequest() {
+        return requestStates;
+    }
+
     public SwerveModuleState[] getSwerveStates() {
-        return states;
+        return currentStates;
     }
 
     @Override
