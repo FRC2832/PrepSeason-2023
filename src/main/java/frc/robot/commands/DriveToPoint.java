@@ -3,11 +3,8 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Drivetrain;
 import frc.robot.Odometry;
@@ -21,6 +18,11 @@ public class DriveToPoint extends CommandBase {
     private Pose2d dest;
     private final double TARGET_ERROR = Units.feetToMeters(0.25);
     private boolean isFinished;
+
+    private double distX;
+    private double distY;
+    private double distLeft;
+    private double scale;
 
     public DriveToPoint(Drivetrain drive, Odometry odometry, Pose2d dest) {
         this.drive = drive;
@@ -46,14 +48,14 @@ public class DriveToPoint extends CommandBase {
     @Override
     public void execute() {
         Pose2d currentPose = odometry.getPose();
-        double distX = currentPose.getX() - dest.getX();
-        double distY = currentPose.getY() - dest.getY();
-        double distLeft = Math.sqrt((distX * distX) + (distY * distY));
+        distX = currentPose.getX() - dest.getX();
+        distY = currentPose.getY() - dest.getY();
+        distLeft = Math.sqrt((distX * distX) + (distY * distY));
 
         if(distLeft > TARGET_ERROR) {
             //since we know the dist left, we can scale the speeds based on max distance
             //formula (max speed) / (delta speed) = (distLeft) / (distx/y)
-            double scale = Constants.MAX_DRIVETRAIN_SPEED / distLeft;
+            scale = Constants.MAX_DRIVETRAIN_SPEED / distLeft;
             drive.swerveDrive(
                 distX  * scale, 
                 distY  * scale, 
@@ -73,9 +75,17 @@ public class DriveToPoint extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        //test code!!!  make the commands keep repeating
-        Command newCommand = new SequentialCommandGroup(new WaitCommand(2),new DriveToPoint(drive, odometry, dest));
-        CommandScheduler.getInstance().schedule(newCommand);
+
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        super.initSendable(builder);
+        builder.addDoubleProperty("distX", ()-> distX, null);
+        builder.addDoubleProperty("distY", ()-> distY, null);
+        builder.addDoubleProperty("distLeft", ()-> distLeft, null);
+        builder.addDoubleProperty("scale", ()-> scale, null);
     }
 }
+
 
