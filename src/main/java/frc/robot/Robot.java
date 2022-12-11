@@ -35,6 +35,11 @@ public class Robot extends TimedRobot {
      */
     @Override
     public void robotInit() {
+        // Starts recording to data log
+        DataLogManager.start();
+        // Record both DS control and joystick data
+        DriverStation.startDataLog(DataLogManager.getLog());
+
         // initialize robot parts and locations where they are
         driverCont = new XboxController(0);         //XboxController plugged into Joystick port 0 on the driver station
 
