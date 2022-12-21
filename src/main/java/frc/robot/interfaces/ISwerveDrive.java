@@ -1,5 +1,6 @@
 package frc.robot.interfaces;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -25,4 +26,5 @@ public interface ISwerveDrive extends Subsystem {
     SwerveDriveKinematics getKinematics();
     Rotation2d getHeading();
     SwerveModuleState[] getSwerveStates();
+    void setPose(Pose2d robotPose);
 }

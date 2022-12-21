@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -11,6 +12,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
     private SwerveDriveKinematics kinematics;
     private ISwerveDriveIo hardware;
     private SwerveModuleState[] swerveStates;
+    private Pose2d robotPose;
 
     public SwerveDriveTrain(ISwerveDriveIo hSwerveDriveIo) {
         this.hardware = hSwerveDriveIo;
@@ -46,7 +48,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
         // ask the kinematics to determine our swerve command
         ChassisSpeeds speeds;
         if (fieldOriented) {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turn, getHeading());
+            //90* is needed since we view the field on a 90* rotation
+            var angle = robotPose.getRotation().minus(Rotation2d.fromDegrees(90));
+            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, turn, angle);
         } else {
             speeds = new ChassisSpeeds(xSpeed, ySpeed, turn);
         }
@@ -76,5 +80,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
     public SwerveModuleState[] getSwerveStates() {
         return swerveStates;
     }
-    
+
+    @Override
+    public void setPose(Pose2d robotPose) {
+        this.robotPose = robotPose;        
+    }
 }

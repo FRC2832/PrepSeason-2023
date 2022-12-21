@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
         }
         
         //subsystems that we don't need to save the reference to, calling new schedules them
-        odometry = new Odometry(drive);
+        odometry = new Odometry(drive,controls);
         odometry.resetPose(Constants.START_POS);
 
         //set the default commands to run
