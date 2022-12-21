@@ -3,13 +3,13 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.Drivetrain;
+import frc.robot.interfaces.ISwerveDrive;
 
 /**
  * Drive the robot at 50% power
  */
 public class DriveTimed extends CommandBase {
-    private Drivetrain drive;
+    private ISwerveDrive drive;
     private Timer timer;
     private double stopTime;
 
@@ -18,7 +18,7 @@ public class DriveTimed extends CommandBase {
      * @param drive Drivetrain subsystem to command
      * @param stopTime Time to drive
      */
-    public DriveTimed(Drivetrain drive, double stopTime) {
+    public DriveTimed(ISwerveDrive drive, double stopTime) {
         //copy inputs to the command
         this.drive = drive;
         this.stopTime = stopTime;
@@ -40,7 +40,7 @@ public class DriveTimed extends CommandBase {
     @Override
     public void execute() {
         //command 50% straight
-        drive.swerveDrive(0.5 * Constants.MAX_DRIVETRAIN_SPEED, 0, 0, false);
+        drive.SwerveDrive(0.5 * Constants.MAX_DRIVETRAIN_SPEED, 0, 0, false);
     }
 
     @Override
@@ -52,6 +52,6 @@ public class DriveTimed extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         //when stopped, stop the drivetrain
-        drive.swerveDrive(0, 0, 0, false);
+        drive.SwerveDrive(0, 0, 0, false);
     }
 }

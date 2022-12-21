@@ -8,6 +8,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public final class Constants {
+    public static final int NUM_WHEELS = 4;
+
+    public static final int PIGEON_IMU_ID = 50;
+    
     //falcon 500 CAN ids for Drive Motors
     public static final int DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR = 14;
     public static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR = 3;

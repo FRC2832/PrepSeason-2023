@@ -25,8 +25,7 @@ public class Robot extends TimedRobot {
     private CommandScheduler schedule;
 
     // robot features
-    public static Simulate sim;
-    private Drivetrain drive;
+    private SwerveDriveTrain drive;
     private Odometry odometry;
 
     /**
@@ -45,7 +44,7 @@ public class Robot extends TimedRobot {
 
         // initialize robot features
         schedule = CommandScheduler.getInstance();
-        drive = new Drivetrain();
+        drive = new SwerveDriveTrain(new SwerveDriveHw());
         
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive);
@@ -69,6 +68,9 @@ public class Robot extends TimedRobot {
     /** This function is called once when autonomous is enabled. */
     @Override
     public void autonomousInit() {
+        //set out position to the auto starting position
+        odometry.resetPose(Constants.START_POS);
+
         //reset the schedule when auto starts to run the sequence we want
         schedule.cancelAll();
 
@@ -82,7 +84,8 @@ public class Robot extends TimedRobot {
 
         //schedule this command for our autonomous
         //schedule.schedule(commands);
-        odometry.resetPose(Constants.START_POS);
+        
+        //test auto to try driving to spots
         DriveToPoint driveToPoint = new DriveToPoint(drive, odometry, Constants.START_POS);
         SmartDashboard.putData(driveToPoint);
         schedule.schedule(driveToPoint);
@@ -129,13 +132,10 @@ public class Robot extends TimedRobot {
     /* Where to initialize simulation objects */
     @Override
     public void simulationInit() {
-        sim = new Simulate(drive);
-        sim.Init();
     }
 
     /* where to map simulation physics, like drive commands to encoder counts */
     @Override
     public void simulationPeriodic() {
-        sim.Periodic();
     }
 }

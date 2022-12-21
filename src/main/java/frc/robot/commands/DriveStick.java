@@ -5,13 +5,13 @@ import org.livoniawarriors.UtilFunctions;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.Drivetrain;
+import frc.robot.interfaces.ISwerveDrive;
 
 /**
  * Drive the robot with joysticks 
  */
 public class DriveStick extends CommandBase {
-    private Drivetrain drive;
+    private ISwerveDrive drive;
     private XboxController cont;
 
     /**
@@ -19,7 +19,7 @@ public class DriveStick extends CommandBase {
      * @param drive Drivetrain to command
      * @param cont Controller to read from
      */
-    public DriveStick(Drivetrain drive, XboxController cont) {
+    public DriveStick(ISwerveDrive drive, XboxController cont) {
         this.drive = drive;
         this.cont = cont;
         addRequirements(drive);
@@ -34,7 +34,7 @@ public class DriveStick extends CommandBase {
         double ySpeed = -UtilFunctions.deadband(cont.getLeftX(), Constants.STICK_DEADBAND);      
         double turn   = -UtilFunctions.deadband(cont.getRightX(), Constants.STICK_DEADBAND);      
 
-        drive.swerveDrive(
+        drive.SwerveDrive(
             xSpeed  * Constants.MAX_DRIVER_SPEED, 
             ySpeed  * Constants.MAX_DRIVER_SPEED, 
             turn    * Constants.MAX_DRIVER_OMEGA, 

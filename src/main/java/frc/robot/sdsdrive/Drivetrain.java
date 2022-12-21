@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.sdsdrive;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Robot;
 
 /**
  * Make a drivetrain subsystem for our robot
@@ -31,6 +33,7 @@ public class Drivetrain extends SubsystemBase {
     private Rotation2d heading = new Rotation2d();
     private SwerveModuleState[] requestStates = new SwerveModuleState[4];
     private SwerveModuleState[] currentStates = new SwerveModuleState[4];
+    private Simulate sim;
 
     /**
      * Initialize the Drivetrain components
@@ -98,6 +101,8 @@ public class Drivetrain extends SubsystemBase {
         if(Robot.isReal()) {
             pigeon = new PigeonIMU(0);
         } else {
+            sim = new Simulate(this);
+            sim.Init();
         }
     }
 
@@ -115,9 +120,10 @@ public class Drivetrain extends SubsystemBase {
                 currentStates[i].speedMetersPerSecond = modules[i].getDriveVelocity();
             }
         } else {
-            ypr_deg = Robot.sim.getPigeonYpr();
-            xyz_mps = Robot.sim.getPigeonXyz();
-            currentStates = Robot.sim.getSwerveStates();
+            sim.Periodic();
+            ypr_deg = sim.getPigeonYpr();
+            xyz_mps = sim.getPigeonXyz();
+            currentStates = sim.getSwerveStates();
         }
 
         //calculate positions for the rest of the loop
