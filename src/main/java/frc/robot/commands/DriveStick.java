@@ -1,10 +1,9 @@
 package frc.robot.commands;
 
-import org.livoniawarriors.UtilFunctions;
-
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.interfaces.IDriveControls;
 import frc.robot.interfaces.ISwerveDrive;
 
 /**
@@ -12,33 +11,37 @@ import frc.robot.interfaces.ISwerveDrive;
  */
 public class DriveStick extends CommandBase {
     private ISwerveDrive drive;
-    private XboxController cont;
+    private IDriveControls cont;
 
     /**
      * Inject the drivetain and controller to use
      * @param drive Drivetrain to command
      * @param cont Controller to read from
      */
-    public DriveStick(ISwerveDrive drive, XboxController cont) {
+    public DriveStick(ISwerveDrive drive, IDriveControls cont) {
         this.drive = drive;
         this.cont = cont;
         addRequirements(drive);
     }
 
     @Override
-    public void initialize() {}
+    public void initialize() {
+        SmartDashboard.putBoolean("Field Oriented", false);
+    }
 
     @Override
     public void execute() {
-        double xSpeed = -UtilFunctions.deadband(cont.getLeftY(), Constants.STICK_DEADBAND);
-        double ySpeed = -UtilFunctions.deadband(cont.getLeftX(), Constants.STICK_DEADBAND);      
-        double turn   = -UtilFunctions.deadband(cont.getRightX(), Constants.STICK_DEADBAND);      
+        boolean fieldOriented = SmartDashboard.getBoolean("Field Oriented", false);
+
+        double xSpeed = cont.GetXDrivePct();
+        double ySpeed = cont.GetYDrivePct();
+        double turn   = cont.GetTurnPct();
 
         drive.SwerveDrive(
             xSpeed  * Constants.MAX_DRIVER_SPEED, 
             ySpeed  * Constants.MAX_DRIVER_SPEED, 
             turn    * Constants.MAX_DRIVER_OMEGA, 
-            false);
+            fieldOriented);
     }
 
     @Override

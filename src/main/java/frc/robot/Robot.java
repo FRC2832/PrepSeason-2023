@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.*;
+import frc.robot.interfaces.IDriveControls;
+import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.simulation.SwerveDriveSim;
 
 /**
@@ -22,12 +24,12 @@ import frc.robot.simulation.SwerveDriveSim;
 public class Robot extends TimedRobot {
 
     // robot parts
-    private XboxController driverCont;
     private CommandScheduler schedule;
 
     // robot features
-    private SwerveDriveTrain drive;
+    private ISwerveDrive drive;
     private Odometry odometry;
+    private IDriveControls controls;
 
     /**
      * This function is run when the robot is first started up and should be used
@@ -41,7 +43,7 @@ public class Robot extends TimedRobot {
         DriverStation.startDataLog(DataLogManager.getLog());
 
         // initialize robot parts and locations where they are
-        driverCont = new XboxController(0);         //XboxController plugged into Joystick port 0 on the driver station
+        controls = new DriveControls();
 
         // initialize robot features
         schedule = CommandScheduler.getInstance();
@@ -56,7 +58,7 @@ public class Robot extends TimedRobot {
         odometry.resetPose(Constants.START_POS);
 
         //set the default commands to run
-        drive.setDefaultCommand(new DriveStick(drive, driverCont));
+        drive.setDefaultCommand(new DriveStick(drive, controls));
     }
 
     /**
