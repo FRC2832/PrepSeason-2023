@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ISwerveDriveIo;
 
@@ -13,6 +14,7 @@ public class SwerveDriveTrain implements ISwerveDrive {
     private ISwerveDriveIo hardware;
     private SwerveModuleState[] swerveStates;
     private Pose2d robotPose;
+    private String moduleNames[];
 
     public SwerveDriveTrain(ISwerveDriveIo hSwerveDriveIo) {
         this.hardware = hSwerveDriveIo;
@@ -25,11 +27,18 @@ public class SwerveDriveTrain implements ISwerveDrive {
             Constants.SWERVE_BACK_RIGHT_LOCATION);
         hardware.setKinematics(kinematics);
         
-        //initialize the swerver states
+        //initialize the swerve states
         swerveStates = new SwerveModuleState[Constants.NUM_WHEELS];
         for(int wheel = 0; wheel < Constants.NUM_WHEELS; wheel++) {
             swerveStates[wheel] = new SwerveModuleState();
         }
+
+        //initialize module names
+        moduleNames = new String[Constants.NUM_WHEELS];
+        moduleNames[FL] = "Module FL/";
+        moduleNames[FR] = "Module FR/";
+        moduleNames[RL] = "Module RL/";
+        moduleNames[RR] = "Module RR/";
     }
     
     @Override
@@ -40,6 +49,15 @@ public class SwerveDriveTrain implements ISwerveDrive {
         for(int wheel = 0; wheel < Constants.NUM_WHEELS; wheel++) {
             swerveStates[wheel].speedMetersPerSecond = hardware.getCornerSpeed(wheel);
             swerveStates[wheel].angle = Rotation2d.fromDegrees(hardware.getCornerAbsAngle(wheel));
+        }
+
+        //display data on SmartDashboard
+        SmartDashboard.putNumber("Gyro Angle", getHeading().getDegrees());
+        for(int wheel=0; wheel < Constants.NUM_WHEELS; wheel++) {
+            SmartDashboard.putNumber(moduleNames[wheel] + "Abs Sensor", hardware.getCornerAbsAngle(wheel));
+            SmartDashboard.putNumber(moduleNames[wheel] + "Turn Sensor", hardware.getCornerAngle(wheel));
+            SmartDashboard.putNumber(moduleNames[wheel] + "Drive Speed Sensor", hardware.getCornerSpeed(wheel));
+            SmartDashboard.putNumber(moduleNames[wheel] + "Calc Angle", swerveStates[wheel].angle.getDegrees());
         }
     }
 
