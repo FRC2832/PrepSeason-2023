@@ -21,7 +21,8 @@ public class SwerveDriveTrain implements ISwerveDrive {
             Constants.SWERVE_FRONT_RIGHT_LOCATION,
             Constants.SWERVE_BACK_LEFT_LOCATION,
             Constants.SWERVE_BACK_RIGHT_LOCATION);
-
+        hardware.setKinematics(kinematics);
+        
         //initialize the swerver states
         swerveStates = new SwerveModuleState[Constants.NUM_WHEELS];
         for(int wheel = 0; wheel < Constants.NUM_WHEELS; wheel++) {

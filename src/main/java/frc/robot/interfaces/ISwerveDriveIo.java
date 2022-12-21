@@ -1,11 +1,13 @@
 package frc.robot.interfaces;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public  interface ISwerveDriveIo {
     void updateInputs();
     Rotation2d getHeading();
+    void setKinematics(SwerveDriveKinematics kinematics);
     void setTurnMotorBrakeMode(boolean brakeOn);
     void setDriveMotorBrakeMode(boolean brakeOn);
 

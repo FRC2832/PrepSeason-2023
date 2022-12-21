@@ -11,7 +11,8 @@ public final class Constants {
     public static final int NUM_WHEELS = 4;
 
     public static final int PIGEON_IMU_ID = 50;
-    
+    public static final double LOOP_TIME = 0.02;
+
     //falcon 500 CAN ids for Drive Motors
     public static final int DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR = 14;
     public static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR = 3;

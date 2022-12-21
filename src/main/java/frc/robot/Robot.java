@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.*;
+import frc.robot.simulation.SwerveDriveSim;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -44,7 +45,11 @@ public class Robot extends TimedRobot {
 
         // initialize robot features
         schedule = CommandScheduler.getInstance();
-        drive = new SwerveDriveTrain(new SwerveDriveHw());
+        if(isReal()) {
+            drive = new SwerveDriveTrain(new SwerveDriveHw());
+        } else {
+            drive = new SwerveDriveTrain(new SwerveDriveSim());
+        }
         
         //subsystems that we don't need to save the reference to, calling new schedules them
         odometry = new Odometry(drive);

@@ -7,6 +7,7 @@ import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.interfaces.ISwerveDrive;
 import frc.robot.interfaces.ISwerveDriveIo;
@@ -118,6 +119,11 @@ public class SwerveDriveHw implements ISwerveDriveIo {
     public void setCornerState(int wheel, SwerveModuleState swerveModuleState) {
         driveMotor[wheel].set(ControlMode.Velocity, swerveModuleState.speedMetersPerSecond);
         turnMotor[wheel].set(ControlMode.Position, swerveModuleState.angle.getDegrees());
+    }
+
+    @Override
+    public void setKinematics(SwerveDriveKinematics kinematics) {
+        //not needed
     }
     
 }
