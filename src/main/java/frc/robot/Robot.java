@@ -109,6 +109,7 @@ public class Robot extends TimedRobot {
         //stop all autonomous commands when teleop starts
         //the default commands should take over
         schedule.cancelAll();
+        odometry.resetHeading();
     }
 
     /** This function is called periodically during operator control. */
