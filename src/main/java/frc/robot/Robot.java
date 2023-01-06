@@ -48,8 +48,10 @@ public class Robot extends TimedRobot {
         // initialize robot features
         schedule = CommandScheduler.getInstance();
         if(isReal()) {
+            //drive = new Drivetrain();
             drive = new SwerveDriveTrain(new SwerveDriveHw());
         } else {
+            //drive = new Drivetrain();
             drive = new SwerveDriveTrain(new SwerveDriveSim());
         }
         
@@ -109,7 +111,9 @@ public class Robot extends TimedRobot {
         //stop all autonomous commands when teleop starts
         //the default commands should take over
         schedule.cancelAll();
-        odometry.resetHeading();
+        //odometry.resetHeading();
+        drive.setDriveMotorBrakeMode(true);
+        drive.setTurnMotorBrakeMode(true);
     }
 
     /** This function is called periodically during operator control. */
@@ -120,6 +124,8 @@ public class Robot extends TimedRobot {
     /** This function is called once when the robot is disabled. */
     @Override
     public void disabledInit() {
+        drive.setDriveMotorBrakeMode(false);
+        drive.setTurnMotorBrakeMode(false);
     }
 
     /** This function is called periodically when disabled. */

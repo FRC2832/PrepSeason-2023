@@ -27,4 +27,7 @@ public interface ISwerveDrive extends Subsystem {
     Rotation2d getHeading();
     SwerveModuleState[] getSwerveStates();
     void setPose(Pose2d robotPose);
+
+    void setTurnMotorBrakeMode(boolean brakeOn);
+    void setDriveMotorBrakeMode(boolean brakeOn);
 }

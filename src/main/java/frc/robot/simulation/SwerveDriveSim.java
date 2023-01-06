@@ -36,9 +36,9 @@ public class SwerveDriveSim implements ISwerveDriveIo {
         turnMotorSim = new FlywheelSim[Constants.NUM_WHEELS];
         turningPIDController = new PIDController[Constants.NUM_WHEELS];
         for(int i=0; i<Constants.NUM_WHEELS; i++) {
-            turnMotorSim[i] = new FlywheelSim(LinearSystemId.identifyVelocitySystem(0.6095, 0.0348),
-                DCMotor.getFalcon500(1), 21.428);
-            turningPIDController[i] = new PIDController(5.0, 0.0, 0.0, 0.001);
+            turnMotorSim[i] = new FlywheelSim(LinearSystemId.identifyVelocitySystem(0.6095, 0.0648),
+                DCMotor.getFalcon500(1), 150f/7);
+            turningPIDController[i] = new PIDController(5.0, 0.0, 50.0, 0.001);
         }
     }
 

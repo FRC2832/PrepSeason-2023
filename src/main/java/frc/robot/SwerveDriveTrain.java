@@ -15,6 +15,8 @@ public class SwerveDriveTrain implements ISwerveDrive {
     private SwerveModuleState[] swerveStates;
     private Pose2d robotPose;
     private String moduleNames[];
+    private double swerveOffsets[];
+    private double turnOffsets[];
 
     public SwerveDriveTrain(ISwerveDriveIo hSwerveDriveIo) {
         this.hardware = hSwerveDriveIo;
@@ -33,6 +35,25 @@ public class SwerveDriveTrain implements ISwerveDrive {
             swerveStates[wheel] = new SwerveModuleState();
         }
 
+        //initialize the swerve offsets
+        swerveOffsets = new double[Constants.NUM_WHEELS];
+        swerveOffsets[FL] = Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET;
+        swerveOffsets[FR] = Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET;
+        swerveOffsets[RL] = Constants.DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET;
+        swerveOffsets[RR] = Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET;
+
+        hardware.updateInputs();
+        turnOffsets = new double[Constants.NUM_WHEELS];
+        for(int i=0; i<turnOffsets.length; i++) {
+            double offset = (swerveOffsets[i] - hardware.getCornerAbsAngle(i));
+            if (offset > 180) {
+                offset -= 360;
+            } else if (offset < -180) {
+                offset += 360;
+            }
+            turnOffsets[i] = offset + hardware.getCornerAngle(i);
+        }
+
         //initialize module names
         moduleNames = new String[Constants.NUM_WHEELS];
         moduleNames[FL] = "Module FL/";
@@ -48,7 +69,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
         //read the swerve corner state
         for(int wheel = 0; wheel < Constants.NUM_WHEELS; wheel++) {
             swerveStates[wheel].speedMetersPerSecond = hardware.getCornerSpeed(wheel);
-            swerveStates[wheel].angle = Rotation2d.fromDegrees(hardware.getCornerAbsAngle(wheel));
+            //double angle = (hardware.getCornerAbsAngle(wheel) - swerveOffsets[wheel]) + (hardware.getCornerAngle(wheel) - turnOffsets[wheel]);
+            double angle = (hardware.getCornerAngle(wheel) - turnOffsets[wheel]);
+            swerveStates[wheel].angle = Rotation2d.fromDegrees(angle);
         }
 
         //display data on SmartDashboard
@@ -58,6 +81,9 @@ public class SwerveDriveTrain implements ISwerveDrive {
             SmartDashboard.putNumber(moduleNames[wheel] + "Turn Sensor", hardware.getCornerAngle(wheel));
             SmartDashboard.putNumber(moduleNames[wheel] + "Drive Speed Sensor", hardware.getCornerSpeed(wheel));
             SmartDashboard.putNumber(moduleNames[wheel] + "Calc Angle", swerveStates[wheel].angle.getDegrees());
+            
+            SmartDashboard.putNumber(moduleNames[wheel] + "ABS Offset", swerveOffsets[wheel]);
+            SmartDashboard.putNumber(moduleNames[wheel] + "Turn Offset", turnOffsets[wheel]);
         }
     }
 
@@ -80,7 +106,15 @@ public class SwerveDriveTrain implements ISwerveDrive {
 
         // command each swerve module
         for (int i = 0; i < requestStates.length; i++) {
+            SmartDashboard.putNumber(moduleNames[i] + "Requested Angle", requestStates[i].angle.getDegrees());
+            //figure out delta angle from the current swerve state
+            var delta = requestStates[i].angle.minus(swerveStates[i].angle);
+            //add it to the current hardware motor angle since we control that motor
+            requestStates[i].angle = Rotation2d.fromDegrees(hardware.getCornerAngle(i)).plus(delta);
             hardware.setCornerState(i, requestStates[i]);
+
+            SmartDashboard.putNumber(moduleNames[i] + "Command Angle", requestStates[i].angle.getDegrees());
+            SmartDashboard.putNumber(moduleNames[i] + "Command Speed", requestStates[i].speedMetersPerSecond);
         }
     }
 
@@ -102,5 +136,15 @@ public class SwerveDriveTrain implements ISwerveDrive {
     @Override
     public void setPose(Pose2d robotPose) {
         this.robotPose = robotPose;        
+    }
+
+    @Override
+    public void setTurnMotorBrakeMode(boolean brakeOn) {
+        hardware.setTurnMotorBrakeMode(brakeOn);
+    }
+
+    @Override
+    public void setDriveMotorBrakeMode(boolean brakeOn) {
+        hardware.setDriveMotorBrakeMode(brakeOn);
     }
 }
