@@ -6,14 +6,14 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.Drivetrain;
 import frc.robot.Odometry;
+import frc.robot.interfaces.ISwerveDrive;
 
 /**
  * Drive the robot to a specific point on the field 
  */
 public class DriveToPoint extends CommandBase {
-    private Drivetrain drive;
+    private ISwerveDrive drive;
     private Odometry odometry;
     private Pose2d dest;
     private final double TARGET_ERROR = Units.feetToMeters(0.25);
@@ -24,7 +24,7 @@ public class DriveToPoint extends CommandBase {
     private double distLeft;
     private double scale;
 
-    public DriveToPoint(Drivetrain drive, Odometry odometry, Pose2d dest) {
+    public DriveToPoint(ISwerveDrive drive, Odometry odometry, Pose2d dest) {
         this.drive = drive;
         this.odometry = odometry;
         this.dest = dest;
@@ -56,14 +56,14 @@ public class DriveToPoint extends CommandBase {
             //since we know the dist left, we can scale the speeds based on max distance
             //formula (max speed) / (delta speed) = (distLeft) / (distx/y)
             scale = Constants.MAX_DRIVETRAIN_SPEED / distLeft;
-            drive.swerveDrive(
+            drive.SwerveDrive(
                 distX  * scale, 
                 distY  * scale, 
                 0, //TODO: Fix Me!
                 false);
         } else {
             //we are at our spot, stop
-            drive.swerveDrive(0, 0, 0, false);
+            drive.SwerveDrive(0, 0, 0, false);
             isFinished = true;
         }
     }

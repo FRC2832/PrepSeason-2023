@@ -1,9 +1,10 @@
-package frc.robot;
+package frc.robot.sdsdrive;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -13,11 +14,14 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Robot;
+import frc.robot.interfaces.ISwerveDrive;
 
 /**
  * Make a drivetrain subsystem for our robot
  */
-public class Drivetrain extends SubsystemBase {
+public class Drivetrain extends SubsystemBase implements ISwerveDrive {
     // robot parts
     private PigeonIMU pigeon;
     private SwerveModule[] modules;
@@ -31,6 +35,7 @@ public class Drivetrain extends SubsystemBase {
     private Rotation2d heading = new Rotation2d();
     private SwerveModuleState[] requestStates = new SwerveModuleState[4];
     private SwerveModuleState[] currentStates = new SwerveModuleState[4];
+    private Simulate sim;
 
     /**
      * Initialize the Drivetrain components
@@ -49,7 +54,7 @@ public class Drivetrain extends SubsystemBase {
                 Constants.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR,
                 Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR,
                 Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_PORT,
-                Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET
+                Rotation2d.fromDegrees(Constants.DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET).getRadians()
         );
         SwerveModule frontRightModule = Mk4iSwerveModuleHelper.createFalcon500(
                 tab.getLayout("Front Right Module", BuiltInLayouts.kList)
@@ -59,7 +64,7 @@ public class Drivetrain extends SubsystemBase {
                 Constants.DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR,
                 Constants.DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR,
                 Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_PORT,
-                Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET
+                Rotation2d.fromDegrees(Constants.DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET).getRadians()
         );
         SwerveModule backLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
                 tab.getLayout("Back Left Module", BuiltInLayouts.kList)
@@ -69,7 +74,7 @@ public class Drivetrain extends SubsystemBase {
                 Constants.DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR,
                 Constants.DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR,
                 Constants.DRIVETRAIN_BACK_LEFT_ENCODER_PORT,
-                Constants.DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET
+                Rotation2d.fromDegrees(Constants.DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET).getRadians()
         );
         SwerveModule backRightModule = Mk4iSwerveModuleHelper.createFalcon500(
                 tab.getLayout("Back Right Module", BuiltInLayouts.kList)
@@ -79,7 +84,7 @@ public class Drivetrain extends SubsystemBase {
                 Constants.DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR,
                 Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR,
                 Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_PORT,
-                Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET
+                Rotation2d.fromDegrees(Constants.DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET).getRadians()
         );
 
         modules = new SwerveModule[] {frontLeftModule, frontRightModule, backLeftModule, backRightModule};
@@ -98,6 +103,8 @@ public class Drivetrain extends SubsystemBase {
         if(Robot.isReal()) {
             pigeon = new PigeonIMU(0);
         } else {
+            sim = new Simulate(this);
+            sim.Init();
         }
     }
 
@@ -115,9 +122,10 @@ public class Drivetrain extends SubsystemBase {
                 currentStates[i].speedMetersPerSecond = modules[i].getDriveVelocity();
             }
         } else {
-            ypr_deg = Robot.sim.getPigeonYpr();
-            xyz_mps = Robot.sim.getPigeonXyz();
-            currentStates = Robot.sim.getSwerveStates();
+            sim.Periodic();
+            ypr_deg = sim.getPigeonYpr();
+            xyz_mps = sim.getPigeonXyz();
+            currentStates = sim.getSwerveStates();
         }
 
         //calculate positions for the rest of the loop
@@ -135,7 +143,7 @@ public class Drivetrain extends SubsystemBase {
      *                      field.
      */
     @SuppressWarnings("ParameterName")
-    public void swerveDrive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    public void SwerveDrive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
         // ask the kinematics to determine our swerve command
         ChassisSpeeds speeds;
         if (fieldRelative) {
@@ -193,5 +201,23 @@ public class Drivetrain extends SubsystemBase {
       builder.addDoubleProperty(".aX", ()-> xyz_mps[0], null);
       builder.addDoubleProperty(".aY", ()-> xyz_mps[1], null);
       builder.addDoubleProperty(".aZ", ()-> xyz_mps[2], null);
+    }
+
+    @Override
+    public void setPose(Pose2d robotPose) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setTurnMotorBrakeMode(boolean brakeOn) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setDriveMotorBrakeMode(boolean brakeOn) {
+        // TODO Auto-generated method stub
+        
     }
 }

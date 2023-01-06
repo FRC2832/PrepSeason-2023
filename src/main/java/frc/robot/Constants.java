@@ -8,35 +8,41 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public final class Constants {
+    public static final int NUM_WHEELS = 4;
+
+    public static final int PIGEON_IMU_ID = 50;
+    public static final double LOOP_TIME = 0.02;
+
     //falcon 500 CAN ids for Drive Motors
-    public static final int DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR = 14;
-    public static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR = 3;
-    public static final int DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR = 8;
-    public static final int DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR = 9;
+    public static final int DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR = 11;
+    public static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR = 21;
+    public static final int DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR = 31;
+    public static final int DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR = 41;
 
     //falcon 500 CAN ids for Turn Motors
-    public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR = 4;
-    public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 1;
-    public static final int DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR = 10;
-    public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR = 7;
+    public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR = 12;
+    public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 22;
+    public static final int DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR = 32;
+    public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR = 42;
 
     //CanCoder CAN ids for swerve corners
-    public static final int DRIVETRAIN_FRONT_LEFT_ENCODER_PORT = 15;
-    public static final int DRIVETRAIN_FRONT_RIGHT_ENCODER_PORT = 14;
-    public static final int DRIVETRAIN_BACK_LEFT_ENCODER_PORT = 16;
-    public static final int DRIVETRAIN_BACK_RIGHT_ENCODER_PORT = 17;
+    public static final int DRIVETRAIN_FRONT_LEFT_ENCODER_PORT = 13;
+    public static final int DRIVETRAIN_FRONT_RIGHT_ENCODER_PORT = 23;
+    public static final int DRIVETRAIN_BACK_LEFT_ENCODER_PORT = 33;
+    public static final int DRIVETRAIN_BACK_RIGHT_ENCODER_PORT = 43;
 
     //CanCoder zero locations
-    public static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = -Math.toRadians(258.39-180.0);
-    public static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = -Math.toRadians(315.09-180.0);
-    public static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = -Math.toRadians(122.52+180.0);
-    public static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = -Math.toRadians(222.01-180.0);
+    public static final double DRIVETRAIN_FRONT_LEFT_ENCODER_OFFSET = 310.7;
+    public static final double DRIVETRAIN_FRONT_RIGHT_ENCODER_OFFSET = 318.0;
+    public static final double DRIVETRAIN_BACK_LEFT_ENCODER_OFFSET = 179.2;
+    public static final double DRIVETRAIN_BACK_RIGHT_ENCODER_OFFSET = 19.33;
 
     //Swerve corner locations for kinematics
-    public static final Translation2d SWERVE_FRONT_LEFT_LOCATION = new Translation2d(0.261, 0.261);
-    public static final Translation2d SWERVE_FRONT_RIGHT_LOCATION = new Translation2d(0.261, -0.261);
-    public static final Translation2d SWERVE_BACK_LEFT_LOCATION = new Translation2d(-0.261, 0.261);
-    public static final Translation2d SWERVE_BACK_RIGHT_LOCATION = new Translation2d(-0.261, -0.261);
+    //24 3/8" for the distance between 2 wheels + 2 1.5" wheel widths = 11.4375" off the center point of the robot
+    public static final Translation2d SWERVE_FRONT_LEFT_LOCATION = new Translation2d(0.291, 0.291);
+    public static final Translation2d SWERVE_FRONT_RIGHT_LOCATION = new Translation2d(0.291, -0.291);
+    public static final Translation2d SWERVE_BACK_LEFT_LOCATION = new Translation2d(-0.291, 0.291);
+    public static final Translation2d SWERVE_BACK_RIGHT_LOCATION = new Translation2d(-0.291, -0.291);
 
     public static final GearRatio SWERVE_GEAR_SET = Mk4iSwerveModuleHelper.GearRatio.L2;  //16.3 ft/s
     public static final double MAX_DRIVETRAIN_SPEED = 4.96;         //max meters per second the swerve modules can go
